@@ -19,9 +19,10 @@ Apple 登录、UAC 和手机确认需要本人配合；启动器不会绕过这�
 把下面内容交给能操作你电脑的 agent；如果之前已在 iloader 登录，请复用现状：
 
 ```text
-请按这个修订后的任务文档，在我的 Windows 上通过 iloader 的 Import IPA 直接用 USB 安装相清夫：
+请读取并执行以下任务，直接操作我的 Windows 完成相清夫安装：
 https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WINDOWS-AGENT.md
-不要再把 SideStore 登录或 LocalDevVPN 当作前置条件。复用已有 iloader 和配对，不卸载现有 App。电脑上的步骤请直接执行，密码和手机确认由我完成。
+
+已授权必要的下载、校验和安装；电脑操作由你完成，仅在系统审批或必须本人验证时让我配合。
 ```
 
 [完整安装任务](INSTALL-WINDOWS-AGENT.md) · [复制启动提示词](01-WINDOWS-AGENT-PROMPT.txt) · [SideStore 登录排障](REPAIR-SIDESTORE.md)
