@@ -1,0 +1,52 @@
+相清夫 · 家庭免费安装包
+版本：1.0（构建 1）
+打包时间：2026-11-03T13:34:49+08:00
+设备要求：iPhone / iPad，iOS / iPadOS 17.0 或更新。
+
+先在 Windows 上解压整个 ZIP。请勿把外层 ZIP 当成 IPA 导入。
+
+如果由电脑上的 AI agent 协助：
+打开 01-WINDOWS-AGENT-PROMPT.txt，复制全部内容给能够操作这台 Windows 的 agent。
+让 agent 访问本解压文件夹。只有聊天能力、不能操作本机的 agent，只能提供操作指导。
+Apple 账号密码、验证码以及手机锁屏密码，由本人直接在官方来源的应用界面或手机上输入，不发到聊天里。
+
+安装分成两部分：
+1. 在 Windows 安装 Apple 设备驱动和 iloader。tools 文件夹已附官方 iloader v2.4.1 x64 安装器。
+2. iPhone 用数据线连接 Windows，解锁并点“信任”。在 iloader 登录本人的免费 Apple 账号，选手机，执行 Install SideStore (Stable)。
+3. 手机按提示信任开发者，并在“设置 → 隐私与安全性 → 开发者模式”中开启开发者模式、重启确认。
+4. 从 App Store 安装 LocalDevVPN（准确入口见下面的 SideStore 官方准备页），允许添加 VPN 配置并连接，手机同时连接 Wi-Fi。
+5. 打开 SideStore，登录与 iloader 相同的账号。先在 My Apps 点 SideStore 右侧的剩余天数，完成首次刷新，再安装其他 App。
+6. 把 XiangQingFu-1.0-1-SideStore.ipa 保存到 iPhone 的“文件”App。在 SideStore 的 My Apps 点“+”并选择这个 IPA；按钮名称如有变化，以实际界面为准。
+7. 安装成功后打开“相清夫”，自行选择照片访问权限。完整图库管理需要完整访问；也可以先选择少量照片体验。
+
+把 IPA 放到手机上的方法：
+- 有下载链接时，在手机 Safari 下载本包并在“文件”App 解压，找到 IPA；网盘下载则用“分享/导出 → 存储到文件”。
+- 也可以通过自己已有的网盘把 IPA 转到手机。无需把源码或开发者证书发给家人。
+- 直接点 IPA 不会像电脑安装包那样完成安装，最后必须交给 SideStore。
+
+续签和更新：
+- 免费签名只有 7 天。建议每 2～3 天连接 Wi-Fi、打开 LocalDevVPN，然后在 SideStore 中刷新 SideStore 和相清夫，确认都接近 7 天。
+- 后台自动刷新可能未及时执行，不能只依赖后台刷新。
+- SideStore 本身过期打不开时，通常需借助 Windows 的 iloader 恢复安装；不要先删除相清夫。
+- 系统升级或配对失效时，也可能需要电脑重新配对。
+- 收到新版 IPA，使用原来的 Apple 账号和相同 App 标识覆盖安装；卸载 App 会清除它保存的本地整理进度。
+- SideStore 和相清夫一共占用 2 个免费开发签名 App 名额；LocalDevVPN 从 App Store 安装，不占该名额。
+
+注意实际使用边界：
+相清夫是整理和删除系统照片的工具。安装验收只需浏览照片，不必删除任何真实照片；开启 iCloud 照片时，实际删除会同步到其他设备。
+
+文件校验：
+IPA：XiangQingFu-1.0-1-SideStore.ipa
+SHA-256：a406fa79fe12bce9a6bbc2a2f1898916c65b29c7bf7e10ef53cac486930452fc
+本包完整文件校验列表见 SHA256SUMS.txt，构建信息见 manifest.json。
+此 IPA 尚未绑定家人的 Apple 账号，需由 SideStore 签名后安装；本包不包含开发者私钥、登录信息或设备配对文件。
+已完成构建与文件检查；家人设备上的安装、首次刷新和运行仍需在当地完成。
+
+官方资料（流程核对日期 2026-11-03）：
+SideStore 准备：https://docs.sidestore.io/docs/installation/prerequisites
+SideStore 安装：https://docs.sidestore.io/docs/installation/install
+SideStore 常见问题：https://docs.sidestore.io/docs/faq
+iloader：https://iloader.app
+iloader 官方发布：https://github.com/nab138/iloader/releases
+
+本包只为相清夫的家庭安装提供指引，与 SideStore、iloader 或 Apple 无隶属关系。
