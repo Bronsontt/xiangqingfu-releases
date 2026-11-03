@@ -4,20 +4,29 @@
 
 **[打开最新版本下载页](https://github.com/Bronsontt/xiangqingfu-releases/releases/latest)**
 
+## 让 Windows agent 自动安装
+
+无需先手动下载安装包。把下面这段交给能够操作你这台 Windows 电脑的 agent：
+
+```text
+请读取并执行以下安装任务文档，在我这台 Windows 上完成相清夫的下载、SideStore 配置、安装与首次续签验证：
+https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WINDOWS-AGENT.md
+
+可直接下载和安装所需官方软件；遇到手机操作、账号验证或系统确认时，再逐步指导我配合。
+```
+
+[完整安装任务文档](INSTALL-WINDOWS-AGENT.md) 包含自动选择最新稳定版本、下载与哈希校验、电脑配置、手机安装、首次续签和故障处理。手机信任、开发者模式、账号验证及系统确认由本人配合操作。
+
+也可以打开 [简短启动提示词](01-WINDOWS-AGENT-PROMPT.txt) 复制，或按 [中文安装说明](00-START-HERE.txt) 手动操作。
+
+## 手动下载
+
 | 文件 | 用途 |
 | --- | --- |
-| `XiangQingFu-SideStore-Family-1.0-1.zip` | 首次安装推荐：IPA、官方 iloader Windows x64 安装器、中文说明、Windows agent 提示词和校验清单 |
+| `XiangQingFu-SideStore-Family-1.0-1.zip` | 首次安装推荐：IPA、官方 iloader Windows x64 安装器、中文说明、agent 提示词和校验清单 |
 | `XiangQingFu-1.0-1-SideStore.ipa` | 已装好 SideStore 时，直接在 iPhone 上下载并导入 |
-| `01-WINDOWS-AGENT-PROMPT.txt` | 交给能够操作家人 Windows 电脑的 agent 的完整配置提示词 |
 
 GitHub 自动提供的 `Source code` 压缩包只包含本仓库说明，**不包含 App 安装包**。
-
-## 开始安装
-
-1. 在 Windows 下载完整家庭安装 ZIP 并解压。
-2. 把 [Windows agent 提示词](01-WINDOWS-AGENT-PROMPT.txt) 全文交给能操作这台 Windows 的 agent，并让它访问解压目录。也可以按 [中文安装说明](00-START-HERE.txt) 手动操作。
-3. 用数据线连接 iPhone，配合完成 Apple 账号登录、信任开发者、开发者模式和 SideStore 首次刷新。
-4. 在 iPhone 的“文件”App 保存 IPA，再由 SideStore 导入。
 
 ## 使用要求
 
