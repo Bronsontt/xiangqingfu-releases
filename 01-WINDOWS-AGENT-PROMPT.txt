@@ -1,0 +1,69 @@
+请在我当前这台 Windows 电脑上，协助我通过 SideStore 免费安装家人开发的 iPhone App“相清夫”。请用中文沟通，直接执行已能完成的电脑操作；遇到手机操作时，一次只告诉我当前需要做的几步，等我完成后继续。
+
+任务资料
+- 我已下载并解压 XiangQingFu-SideStore-Family 安装包。如果你看不到它，请只询问解压路径，或先在当前工作区/我的 Downloads 中定位，不要扫描整块磁盘。
+- IPA 文件：XiangQingFu-1.0-1-SideStore.ipa
+- 预期 SHA-256：a406fa79fe12bce9a6bbc2a2f1898916c65b29c7bf7e10ef53cac486930452fc
+- 版本：1.0（构建 1）；最低 iOS/iPadOS 17.0。
+- 开发者原始 Bundle ID：com.tangqiaoqi.xiangqingfu。SideStore 会用我自己的免费 Apple 账号重新签名，可能调整标识；后续保持同一账号与同一安装标识。
+- tools/iloader-windows-x64-v2.4.1.msi 是随包提供的官方未修改安装器，校验信息在 tools/iloader-release.json。
+- 我已选择并授权安装 SideStore 所需的正常软件和驱动，不需要为每个下载/安装步骤重复询问。
+
+执行前核对官方资料，若界面或要求更新，以最新官方资料为准：
+https://docs.sidestore.io/docs/installation/prerequisites
+https://docs.sidestore.io/docs/installation/install
+https://docs.sidestore.io/docs/faq
+https://iloader.app
+https://github.com/nab138/iloader/releases
+
+请按顺序完成：
+
+1. 检查环境和文件。
+确认你有权限操作真实的这台 Windows，而不是只连接到云端容器；没有本机操作能力就明确说明，改为逐步指导。
+检查 Windows 版本和 CPU 架构，以及已经安装的 iloader、iTunes、Apple Devices、Apple Mobile Device Support。不要重复安装或无故卸载可用软件。
+SideStore 官方当前不支持 32 位 Windows 或 Windows 10 on ARM。包内安装器是 x64；若不匹配，先查官方支持和相应版本，不强行安装。
+用 PowerShell Get-FileHash -Algorithm SHA256 -LiteralPath 核对 IPA 和安装器，分别与上方 IPA 哈希、tools/iloader-release.json 对照。哈希不匹配先停止使用该文件并重新从原发布地址获取。
+确认手机系统满足本 App 的最低版本。请勿把 SideStore 本身的最低系统要求误认为相清夫的要求。
+
+2. 配置 Windows。
+优先复用能够识别手机的现有 Apple 驱动环境。缺少时，从 Apple 官方下载 iTunes/设备驱动，按 SideStore 当前官方教程处理；只有确认兼容性需要时再使用 Apple Devices。
+安装包内校验通过的 iloader，或在确有版本/兼容性需要时从 iloader 官方 GitHub 下载最新稳定版。安装前核对来源；不使用随机镜像、第三方签名站或修改版。
+使用图形安装器或系统标准安装命令。若系统 UAC 要求本人确认，请让我在电脑上确认，不绕过系统安全机制。
+完成后启动 iloader，确认软件实际可运行。
+
+3. 连接手机并安装 SideStore。
+让我用数据线把目标 iPhone 连接这台 Windows，解锁并在手机上选择“信任此电脑”。若插着多个设备，确认目标设备。
+在 iloader 中让本人直接输入自己的 Apple 账号、密码和两步验证码。不要让本人把这些信息粘贴到聊天；不要读取、记录或上传密码、验证码、签名私钥或配对文件。无需退出手机上现有的 iCloud 账号。
+选择 Install SideStore (Stable)。当前官方 iloader 会处理 SideStore 和配对资料，不要额外套用旧版 AltServer/手工生成配对文件流程，除非当前错误确实需要。
+若提示撤销已有开发证书，先说明会影响该账号下哪些现有开发签名 App；不要盲目批量撤销证书或删除 App。
+
+4. 指导本人完成手机设置。
+在“设置 → 通用 → VPN 与设备管理”中信任刚才账号对应的开发者 App。
+在“设置 → 隐私与安全性 → 开发者模式”开启开发者模式，按系统提示重启并确认。本人自行输入手机密码。
+从 SideStore 官方准备页指向的 App Store 页面安装 LocalDevVPN，允许 VPN 配置。连接 Wi-Fi，再打开 LocalDevVPN 连接。
+如有其他 VPN 占用导致连接冲突，只在刷新时按需切换，事后可恢复原设置；不关闭防火墙、防病毒软件或更改全局 DNS 来碰运气。
+打开 SideStore，登录与 iloader 相同的 Apple 账号，先在 My Apps 中刷新 SideStore 自己。必须确认首次刷新成功，再装相清夫。
+
+5. 安装相清夫。
+帮助我把本包中的 IPA 保存到 iPhone 的“文件”App。优先用我已有的下载链接/网盘并“存储到文件”；不要未经指示把 IPA 上传到新的服务。外层 ZIP 应先解压。
+在 SideStore 的 My Apps 点“+”（以实际界面为准），选择 XiangQingFu-1.0-1-SideStore.ipa，等待签名和安装结束。
+如果已有旧版相清夫，优先用相同账号和安装标识覆盖安装，不要先卸载；卸载会清除本地整理进度。
+本 App 是普通 SwiftUI/PhotoKit 应用，不需要 JIT、LiveContainer、越狱、企业证书或付费开发者会员。
+
+6. 验收。
+确认相清夫出现在主屏幕并可打开，让本人选择照片权限，验证可以浏览所授权的照片。
+不要为验收而删除或修改任何真实照片。不要用“加入待删除”代替实际运行验证。
+拔掉数据线，保持手机连接 Wi-Fi 并开启 LocalDevVPN，再验证 SideStore 和相清夫都可成功刷新，剩余有效期接近 7 天。这是确认以后通常不需要电脑的关键一步。
+如果你看不到手机画面，让我反馈界面文字；没有观察到或没有本人反馈确认的步骤，一律标记“未验证”，不要宣称已经成功。
+
+7. 交接维护方法。
+告诉我每 2～3 天在 Wi-Fi + LocalDevVPN 下刷新 SideStore 和相清夫；免费签名会在 7 天到期，不保证后台自动刷新总能执行。
+说明新版本用相同账号覆盖安装；SideStore 过期或配对失效时可能要重新用电脑处理。
+最后给出已完成步骤、安装版本、首次刷新是否成功，以及还需要本人完成的操作。
+
+故障处理原则
+先记录具体错误码和不含敏感信息的上下文，查询 SideStore/iloader 官方故障排查。
+Windows 检测不到手机时，先查线材、解锁/信任、USB 口和 Apple 驱动服务。
+手机刷新失败时，先查 Wi-Fi、LocalDevVPN、证书剩余时间和配对状态；需要时按官方步骤用 iloader 修复配对。
+账号登录错误避免连续反复重试，不切换到来历不明的 Anisette 服务。
+不要把“卸载所有 App/重置手机/删除照片”作为常规修复手段；涉及删除已有数据时，应先说明具体影响并取得本人同意。
