@@ -4,7 +4,7 @@ setlocal
 set "XQF_LAUNCHER=%~f0"
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create([IO.File]::ReadAllText($env:XQF_LAUNCHER)))"
 set "XQF_EXIT=%errorlevel%"
-if not "%XQF_EXIT%"=="0" pause
+if not "%XQF_EXIT%"=="0" if not defined XQF_VERIFY_PACKAGE pause
 exit /b %XQF_EXIT%
 #>
 # Compatible with Windows PowerShell 5.1. Dot-source to test without running setup.
@@ -55,6 +55,7 @@ function Test-XqfAssetUrl($Asset, [string]$Tag) {
 }
 
 function Expand-XqfArchive([string]$Zip, [string]$Destination) {
+    Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $archive = [IO.Compression.ZipFile]::OpenRead($Zip)
     try {

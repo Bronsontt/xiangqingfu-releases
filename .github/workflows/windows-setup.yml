@@ -17,3 +17,11 @@ jobs:
       - name: Test on Windows PowerShell 5.1 and exercise CMD
         shell: powershell
         run: ./tests/windows-setup.Tests.ps1
+      - name: Verify real published package with Windows PowerShell
+        shell: powershell
+        run: |
+          . ./Install-XiangQingFu.ps1
+          $cache = Join-Path $env:RUNNER_TEMP 'xqf-live-download'
+          $package = Get-XqfPackage $cache
+          $verified = Test-XqfPackage $package
+          Write-Host ('LIVE_PACKAGE_VERIFIED ' + $verified.Manifest.version)

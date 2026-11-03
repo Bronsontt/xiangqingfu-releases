@@ -46,6 +46,7 @@ function Test-XqfAssetUrl($Asset, [string]$Tag) {
 }
 
 function Expand-XqfArchive([string]$Zip, [string]$Destination) {
+    Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $archive = [IO.Compression.ZipFile]::OpenRead($Zip)
     try {

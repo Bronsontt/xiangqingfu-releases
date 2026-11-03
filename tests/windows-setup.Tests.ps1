@@ -88,6 +88,7 @@ try {
         $asset.browser_download_url = 'https://example.com/kit.zip'
         Reject { Test-XqfAssetUrl $asset 'v1' }
     }
+    Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     Check 'ZIP traversal blocked before extraction' {
         $zipPath = Join-Path $work 'malicious.zip'
