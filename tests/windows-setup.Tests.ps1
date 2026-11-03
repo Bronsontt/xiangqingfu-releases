@@ -7,7 +7,7 @@ $launcher = Join-Path $templates 'Install-XiangQingFu.cmd'
 $errors = $null; $tokens = $null
 [void][System.Management.Automation.Language.Parser]::ParseFile($source, [ref]$tokens, [ref]$errors)
 if ($errors.Count) { throw ($errors | Out-String) }
-[void][System.Management.Automation.Language.Parser]::ParseFile($launcher, [ref]$tokens, [ref]$errors)
+[void][System.Management.Automation.Language.Parser]::ParseInput([IO.File]::ReadAllText($launcher), [ref]$tokens, [ref]$errors)
 if ($errors.Count) { throw ($errors | Out-String) }
 . $source
 $script:count = 0
