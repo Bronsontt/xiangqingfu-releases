@@ -18,6 +18,8 @@ Apple 登录、UAC 和手机确认需要本人配合；启动器不会绕过这�
 
 把下面内容交给能操作你电脑的 agent；如果之前已在 iloader 登录，请复用现状：
 
+agent 会自动读取已校验的 IPA 路径，在 `Import IPA` 的文件选择框填入并确认打开，不需要你复制 TXT 中的路径。记事本仍保留，用来提醒登录 iloader、连接手机及确认权限。
+
 ```text
 请读取并执行以下任务，直接操作我的 Windows 完成相清夫安装：
 https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WINDOWS-AGENT.md
@@ -39,6 +41,6 @@ https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WI
 
 `Welcome to SideStore / Failed to Sign In / -1005` 表示 SideStore 登录网络中断，不是 LocalDevVPN 需要登录 Apple 账号。新的 USB 路线移除了这一安装阻塞；不能据此声称原来的手机登录网络故障已经修好。
 
-App 仍为 1.0（构建 1），安装流程修订为 2。App 已完成 Release 真机构建及 IPA 校验；最终手机安装、运行、续签需要在收件人设备上确认。
+App 仍为 1.0（构建 1），安装流程修订为 3。App 已完成 Release 真机构建及 IPA 校验；最终手机安装、运行、续签需要在收件人设备上确认。
 
 随包 iloader 是 [官方 v2.4.1](https://github.com/nab138/iloader/releases/tag/v2.4.1) 未修改的 x64 安装器；启动脚本由本项目维护。与 iloader、SideStore、Apple 无隶属关系。本仓库只分发安装包、安装脚本和说明，不提供账号、设备配对文件或签名私钥。

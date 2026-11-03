@@ -44,10 +44,35 @@ try {
         $result = Test-XqfPackage $kit
         if ($result.Ipa -ne $ipa) { throw 'Wrong IPA path.' }
     }
+    Check 'agent import task preserves the exact path through JSON without user copying' {
+        $json = ConvertTo-XqfImportJson (Get-XqfImportTask -LocalPackage $kit)
+        if ($json -match '[^\x00-\x7F]') { throw 'Native-command JSON would depend on the console code page.' }
+        $task = $json | ConvertFrom-Json
+        if ($task.ipaPath -cne $ipa -or $task.ipaSHA256 -ne (Get-XqfHash $ipa)) { throw 'Wrong import target.' }
+        if ($task.owner -ne 'agent' -or $task.requiresUserPathEntry -ne $false) { throw 'Import was handed back to the user.' }
+        if ($task.phoneInstallation -ne 'not_verified' -or $task.requiredUiActions[-1] -ne 'wait_for_install_result') { throw 'Preparation was mistaken for completion.' }
+    }
+    Check 'old setup state resumes without clipboard, TXT parsing or a new download' {
+        $state = Join-Path $work 'legacy-state.json'
+        @{setupRevision=2; packageRoot=$kit} | ConvertTo-Json | Set-Content -LiteralPath $state -Encoding UTF8
+        $task = Get-XqfImportTask -StatePath $state
+        if ($task.ipaPath -cne $ipa) { throw 'Legacy state could not resolve IPA.' }
+    }
+    Check 'unverified saved IPA hint cannot override the manifest target' {
+        $state = Join-Path $work 'stale-state.json'
+        @{packageRoot=$kit; ipaPath='C:\wrong\other.ipa'} | ConvertTo-Json | Set-Content -LiteralPath $state -Encoding UTF8
+        if ((Get-XqfImportTask -StatePath $state).ipaPath -cne $ipa) { throw 'Unverified path was used.' }
+    }
+    Check 'unfinished setup state requires preparation instead of guessing a path' {
+        $state = Join-Path $work 'unfinished-state.json'
+        @{stage='preparing'} | ConvertTo-Json | Set-Content -LiteralPath $state -Encoding UTF8
+        Reject { Get-XqfImportTask -StatePath $state }
+    }
     Check 'tampered IPA rejected' {
         $original = [IO.File]::ReadAllBytes($ipa)
         Add-Content -LiteralPath $ipa -Value 'tampered'
         Reject { Test-XqfPackage $kit }
+        Reject { Get-XqfImportTask -LocalPackage $kit }
         [IO.File]::WriteAllBytes($ipa, $original)
     }
     Check 'tampered installer rejected' {
@@ -137,6 +162,12 @@ try {
         [void](Test-XqfPackage (Get-XqfPackage (Join-Path $work 'fallback-cache')))
     }
     if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) {
+        Check 'PrintImportTask CLI emits parseable JSON without launching apps or re-downloading' {
+            $output = & powershell.exe -NoLogo -NoProfile -File $source -PrintImportTask -PackageRoot $kit
+            if ($LASTEXITCODE -ne 0) { throw 'PrintImportTask CLI failed.' }
+            $task = ($output -join "`n") | ConvertFrom-Json
+            if ($task.ipaPath -cne $ipa -or $task.owner -ne 'agent') { throw 'CLI returned wrong task.' }
+        }
         Check 'real CMD launcher under Windows PowerShell, no installs' {
             $cmdPath = Join-Path $kit 'Install-XiangQingFu.cmd'
             Copy-Item -LiteralPath $launcher -Destination $cmdPath

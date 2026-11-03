@@ -1,5 +1,5 @@
 ﻿# Compatible with Windows PowerShell 5.1. Dot-source to test without running setup.
-param([string]$PackageRoot = '', [switch]$ValidateOnly)
+param([string]$PackageRoot = '', [switch]$ValidateOnly, [switch]$PrintImportTask)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
@@ -22,7 +22,7 @@ function Invoke-XqfRequest([string]$Url, [string]$OutFile = '') {
     for ($attempt = 1; $attempt -le 3; $attempt++) {
         try {
             $parameters = @{ Uri = $Url; UseBasicParsing = $true; TimeoutSec = 45;
-                Headers = @{ 'User-Agent' = 'XiangQingFu-Windows-Setup/2' }; ErrorAction = 'Stop' }
+                Headers = @{ 'User-Agent' = 'XiangQingFu-Windows-Setup/3' }; ErrorAction = 'Stop' }
             if ($OutFile) {
                 Invoke-WebRequest @parameters -OutFile ($OutFile + '.part') | Out-Null
                 Move-Item -LiteralPath ($OutFile + '.part') -Destination $OutFile -Force
@@ -138,6 +138,41 @@ function Test-XqfPackage([string]$Root) {
     return @{ Manifest = $manifest; Ipa = $ipa; Installer = $installerPath; IloaderVersion = $release.version }
 }
 
+function Get-XqfImportTask([string]$LocalPackage = '', [string]$StatePath = '') {
+    if (-not $LocalPackage) {
+        if (-not $StatePath) { $StatePath = Join-Path $env:LOCALAPPDATA 'XiangQingFu-Setup\setup-status.json' }
+        $saved = Get-Content -LiteralPath $StatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ([string]::IsNullOrWhiteSpace([string]$saved.packageRoot)) {
+            throw '尚未找到已准备的安装目录。请由 agent 完成准备，或从已有文件定位安装目录。'
+        }
+        $LocalPackage = [string]$saved.packageRoot
+    }
+    # Re-derive the path from the verified manifest, including for older setup states.
+    # Never trust a stale clipboard or an unverified ipaPath saved by an earlier run.
+    $kit = Test-XqfPackage $LocalPackage
+    return [pscustomobject][ordered]@{
+        schemaVersion = 1
+        owner = 'agent'
+        application = 'iloader'
+        action = 'import_ipa'
+        packageRoot = [IO.Path]::GetFullPath($LocalPackage)
+        ipaPath = $kit.Ipa
+        ipaSHA256 = [string]$kit.Manifest.ipaSHA256
+        requiredUiActions = @('click_import_ipa', 'fill_file_name_with_ipaPath', 'confirm_open', 'wait_for_install_result')
+        requiresUserPathEntry = $false
+        phoneInstallation = 'not_verified'
+    }
+}
+
+function ConvertTo-XqfImportJson($Task) {
+    $json = $Task | ConvertTo-Json -Depth 6
+    # Preserve Unicode file paths across Windows PowerShell native-command code pages.
+    return [regex]::Replace($json, '[^\x00-\x7F]', {
+        param($character)
+        '\u{0:x4}' -f [int][char]$character.Value
+    })
+}
+
 function Find-XqfIloader {
     $candidates = @()
     foreach ($base in @($env:LOCALAPPDATA, $env:ProgramFiles, ${env:ProgramFiles(x86)})) {
@@ -174,7 +209,7 @@ function Start-XqfSetup([string]$LocalPackage = '') {
     $cache = Join-Path $env:LOCALAPPDATA 'XiangQingFu-Setup'
     New-Item -ItemType Directory -Path $cache -Force | Out-Null
     $statusPath = Join-Path $cache 'setup-status.json'
-    $status = [ordered]@{ setupRevision = 2; startedAt = [DateTimeOffset]::Now.ToString('o');
+    $status = [ordered]@{ setupRevision = 3; startedAt = [DateTimeOffset]::Now.ToString('o');
         stage = 'preparing'; phoneInstallation = 'not_verified'; renewal = 'not_verified' }
     $status | ConvertTo-Json | Set-Content -LiteralPath $statusPath -Encoding UTF8
     try {
@@ -184,12 +219,15 @@ function Start-XqfSetup([string]$LocalPackage = '') {
             else { $LocalPackage = Get-XqfPackage $cache }
         }
         $kit = Test-XqfPackage $LocalPackage
+        $importTask = Get-XqfImportTask -LocalPackage $LocalPackage
         $status.stage = 'package_verified'
-        $status['packageRoot'] = $LocalPackage
+        $status['packageRoot'] = $importTask.packageRoot
+        $status['ipaPath'] = $importTask.ipaPath
+        $status['importTask'] = $importTask
         $status['ipaSHA256'] = Get-XqfHash $kit.Ipa
         $status['appVersion'] = [string]$kit.Manifest.version
         $status['appBuild'] = [string]$kit.Manifest.build
-        $status | ConvertTo-Json | Set-Content -LiteralPath $statusPath -Encoding UTF8
+        $status | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $statusPath -Encoding UTF8
         $appleService = Get-XqfAppleService
         if (-not $appleService) {
             Write-Host '未检测到 Apple 手机驱动服务。正在准备官方 iTunes；已有 Apple Devices 的电脑可先在其中确认手机连接。'
@@ -220,15 +258,22 @@ function Start-XqfSetup([string]$LocalPackage = '') {
         $clipboardReady = $false
         try { Set-Clipboard -Value $kit.Ipa; $clipboardReady = $true } catch { }
         $instructions = @"
-相清夫安装助手 · 已准备好安装文件
+相清夫安装助手 · 登录与安装提示
 
+需要本人配合：
 1. 用数据线连接 iPhone，解锁并点“信任此电脑”。
-2. 在已打开的 iloader 中选择手机；若未登录，请本人登录 Apple 账号。
-3. 点击 Import IPA（导入 IPA），在文件名输入框粘贴下面的完整路径，再点打开：
+2. 若电脑上的 iloader 尚未登录，请本人在 iloader 界面登录 Apple 账号并完成验证。
+   已登录则跳过；这条 USB 路线无需另外登录手机上的 SideStore。
 
+登录完成后由 agent 继续：
+选择目标手机 → 点击 Import IPA → 自动填写 IPA 路径 → 点击打开 → 等待签名和安装结果。
+你不需要复制本文中的路径。路径填写和确认打开属于 agent 的电脑操作。
+此说明窗口仅用于提醒；它的出现不代表安装完成，也不是请你接手导入。
+
+已校验的 IPA 文件（供 agent 和排错使用）：
 $($kit.Ipa)
+agent 可读取下方状态文件中的 ipaPath / importTask；新版脚本也支持 -PrintImportTask。
 
-随后等待 iloader 的签名和安装完成。
 手机提示未信任开发者时：设置 → 通用 → VPN 与设备管理 → 信任对应开发者。
 手机要求开发者模式时：设置 → 隐私与安全性 → 开发者模式 → 开启并重启确认。
 系统最低要求：iOS / iPadOS $($kit.Manifest.minimumOSVersion)。
@@ -249,13 +294,14 @@ https://github.com/Bronsontt/xiangqingfu-releases/blob/main/REPAIR-SIDESTORE.md
         Start-Process notepad.exe -ArgumentList ('"' + $next + '"')
         $status.stage = 'ready_for_import_ipa'
         $status['clipboardContainsIpaPath'] = $clipboardReady
-        $status | ConvertTo-Json | Set-Content -LiteralPath $statusPath -Encoding UTF8
-        Write-Host '电脑准备完成。请按打开的说明在 iloader 点击 Import IPA。手机安装结果尚未验证。' -ForegroundColor Green
+        $status | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $statusPath -Encoding UTF8
+        Write-Host '电脑准备完成。用户只需完成登录或手机确认；agent 必须继续自动填写 IPA 路径并确认导入。手机安装结果尚未验证。' -ForegroundColor Green
         Write-Host "再次双击可恢复准备；状态文件：$statusPath"
+        Write-Output (ConvertTo-XqfImportJson $importTask)
     } catch {
         $status.stage = 'needs_attention'
         $status['error'] = $_.Exception.Message
-        $status | ConvertTo-Json | Set-Content -LiteralPath $statusPath -Encoding UTF8
+        $status | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $statusPath -Encoding UTF8
         throw
     }
 }
@@ -264,7 +310,10 @@ if ($MyInvocation.InvocationName -ne '.') {
     try {
         # This read-only mode also allows exercising the .cmd entry in Windows CI.
         if ($env:XQF_VERIFY_PACKAGE) { $PackageRoot = $env:XQF_VERIFY_PACKAGE; $ValidateOnly = $true }
-        if ($ValidateOnly) {
+        if ($PrintImportTask) {
+            # Read-only resume: no downloads, app launches, clipboard access or account actions.
+            ConvertTo-XqfImportJson (Get-XqfImportTask -LocalPackage $PackageRoot)
+        } elseif ($ValidateOnly) {
             if (-not $PackageRoot) { throw 'ValidateOnly requires PackageRoot.' }
             $verified = Test-XqfPackage $PackageRoot
             Write-Host ('PACKAGE_VERIFIED ' + $verified.Manifest.version)

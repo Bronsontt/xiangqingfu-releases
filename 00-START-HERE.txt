@@ -1,11 +1,13 @@
-﻿相清夫 · 家庭安装助手（安装流程修订 2）
+﻿相清夫 · 家庭安装助手（安装流程修订 3）
 App 版本：1.0（构建 1）
-打包时间：2026-11-03T18:19:05+08:00
+打包时间：2026-11-03T19:11:56+08:00
 设备要求：iOS / iPadOS 17.0 或更新。
 
 先在 Windows 解压完整 ZIP，再双击 Install-XiangQingFu.cmd。
-助手会校验文件、准备 iloader，打开安装说明并复制 IPA 路径。
-在 iloader 选手机、本人登录 Apple 账号，然后点击 Import IPA，粘贴路径并安装。
+助手会校验文件、准备 iloader，并保留记事本提醒连接手机和登录。
+有 agent 协助时：本人在 iloader 登录后，由 agent 自动读取路径、点击 Import IPA、
+填写文件名并确认打开。无需本人复制 TXT 中的路径；记事本只作提醒。
+无 agent 的手动安装：在 iloader 选择手机，再用 Import IPA 选择本包中的 IPA。
 手机按需要确认“信任此电脑”、开发者信任、开发者模式及重启。
 
 安装相清夫不需要先登录 SideStore，也不需要先连接 LocalDevVPN。

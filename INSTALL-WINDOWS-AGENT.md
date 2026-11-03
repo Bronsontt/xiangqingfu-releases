@@ -1,6 +1,6 @@
 # Windows agent 安装任务：先通过 USB 安装相清夫
 
-安装流程修订 2 · 2026-11-03。供能够操作家人实际 Windows 电脑的 agent 执行。用户要求安装时执行；仅要求阅读时不执行。
+安装流程修订 3 · 2026-11-03。供能够操作家人实际 Windows 电脑的 agent 执行。用户要求安装时执行；仅要求阅读时不执行。
 
 ## 本次修复与完成目标
 
@@ -26,7 +26,7 @@
 - 自动查询本仓库最新稳定 Release，下载唯一家庭 ZIP；先核对 Release 的 SHA-256 和大小，再解压并校验 IPA 与官方 iloader 安装器。
 - 缓存位于 `%LOCALAPPDATA%\XiangQingFu-Setup`。下载中断后重新运行会复用校验通过的 ZIP。也可在完整安装包内直接双击入口。
 - 已有 iloader 优先复用。缺少 Apple 手机驱动时尝试通过 winget 的 `Apple.iTunes` 准备官方组件；无 winget 或仍缺驱动时打开 Apple 官方入口并提示下一步。
-- 启动器打开 iloader 和当前操作说明，并尝试复制准确 IPA 路径。**它不会自动登录、点击 Import IPA、确认手机权限，也不会将“电脑准备好”写成“手机安装成功”。** agent 应继续完成能操作的界面步骤。
+- 启动器保留记事本，用于提醒本人连接手机、登录电脑上的 iloader 和确认手机权限；同时在标准输出及 `setup-status.json` 的 `importTask` 中交付已校验 IPA 的绝对路径。**记事本不是把导入操作交还用户的信号。** agent 必须继续完成下文的文件选择、填写路径、确认打开和结果检查，不要求用户复制 TXT 中的路径。启动器本身不代输账号或验证手机。
 - 不以管理员身份运行整个 agent；UAC 由本人确认。密码、验证码、锁屏密码只在官方来源的 iloader 或手机界面输入，不进入聊天、脚本、日志。
 - 只有云端容器、未连接用户 Windows 时，说明无法操控本机；继续提供启动器和必要步骤，不假装已操作电脑或手机。
 
@@ -43,7 +43,7 @@
 
 ## 2. 复用当前进度
 
-- 读取 `%LOCALAPPDATA%\XiangQingFu-Setup\setup-status.json` 和 `NEXT-STEPS.txt`（若存在）。状态只表示电脑准备进度，不证明手机已安装。
+- 读取 `%LOCALAPPDATA%\XiangQingFu-Setup\setup-status.json`（包含 `ipaPath` / `importTask`）和 `NEXT-STEPS.txt`（若存在）。状态只表示电脑准备进度，不证明手机已安装。旧状态没有 `ipaPath` 时按第 3 节恢复，不能让用户手动找路径。
 - iloader 已显示 `Sign Out` / 已登录时，不让家人再次输入密码。手机上的 SideStore 登录可以暂时关闭。
 - 已安装的 SideStore、LocalDevVPN、相清夫均保留；不要用卸载、删除配对、撤销全部证书来“重来一次”。
 - 核对目标手机、iOS 版本（相清夫最低 iOS 17.0，以 manifest 为准）和空闲开发签名 App 名额。连接多台设备时确认目标。
@@ -53,13 +53,34 @@
 
 1. 请家人用 USB 数据线连接 iPhone，解锁并在手机上点“信任此电脑”。确认 iloader 已识别目标设备。
 2. 若未登录，让本人在 iloader 界面登录自己的 Apple 账号并完成验证；不退出手机现有 iCloud 账号。
-3. **点击 `Import IPA`（导入 IPA），选择已经校验的相清夫 `.ipa`。不要点击 `Install SideStore`，不要导入外层 ZIP。** 文件名和绝对路径来自 manifest / NEXT-STEPS.txt。
+3. **由 agent 点击 `Import IPA`（导入 IPA），自动填写已经校验的相清夫 `.ipa` 路径并点击“打开”。** 按下方具体步骤执行，不能停下来让用户复制 TXT。不要点击 `Install SideStore`，不要导入外层 ZIP。
 4. 等待 iloader 签名和安装完成。iloader 2.4.1 官方界面支持 Import IPA；没有已核实的无交互命令行导入参数，不凭空编造 `--install` 命令。
 5. 手机要求信任开发者时：设置 → 通用 → VPN 与设备管理 → 对应开发者 → 信任（部分系统为允许并重启）。
 6. 手机要求开发者模式时：设置 → 隐私与安全性 → 开发者模式 → 开启，重启后再次确认。已开启则跳过。
 7. 打开手机上的相清夫，让家人自己选择照片权限；只浏览授权照片验收，不删除或修改真实照片。
 
 每次只给家人当前需要完成的 1～3 步。电脑 GUI 能操作的按钮由 agent 操作，手机和账号安全确认由本人完成。
+
+### Import IPA 必须由 agent 完成
+
+**如果当前已到文件选择阶段，直接从此处继续，不重新安装软件或退出账号。**
+
+1. 优先使用当前启动器输出的 `importTask.ipaPath`。从保存状态恢复时，使用当前版本的 `Install-XiangQingFu.ps1 -PrintImportTask`：它读取已准备的目录，根据 manifest 重新校验并输出 JSON，不下载、不打开软件、不操作账号。即使旧状态没有 `ipaPath` 字段也能恢复。
+2. agent 下载并定位 [当前 PowerShell 脚本](https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/Install-XiangQingFu.ps1)，将其本地路径放入 `$setupScript`，自行执行下面的命令。不要让用户输入命令或路径：
+
+   ```powershell
+   $taskJson = & powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File $setupScript -PrintImportTask
+   if ($LASTEXITCODE -ne 0) { throw '无法恢复已校验的导入任务，请由 agent 检查安装目录。' }
+   $importTask = ($taskJson -join "`n") | ConvertFrom-Json
+   $ipaPath = [string]$importTask.ipaPath
+   if (-not (Test-Path -LiteralPath $ipaPath -PathType Leaf)) { throw 'IPA 文件不存在。' }
+   ```
+
+   若之前完全手动准备、没有状态文件，由 agent 从已知解压目录或已有 TXT 的完整路径定位包根目录，再给 `-PrintImportTask` 传入 `-PackageRoot <已定位的目录>`。同样先校验文件；不要猜文件名、依赖旧剪贴板、扫描整块磁盘，或让用户找路径。
+3. 用可用的桌面控制工具读取 iloader 实际界面，确认已登录并选中目标手机。点击 `Import IPA`；如果它的文件选择窗口已经打开，就复用这个窗口，不重复点击。
+4. 在刚观察到的文件选择窗口中定位 **“文件名 / File name”输入框**，由 agent 将 `$ipaPath` 的完整值写入，然后点击 **“打开 / Open”**。路径是数据，不能当命令执行；不靠中文、空格、括号或单引号去拆分路径。使用已有工具的元素填值/输入能力；必要时由 agent 设置剪贴板并粘贴，不能要求用户按 Ctrl+V。
+5. 操作后重新读取界面，确认文件选择窗口关闭且 iloader 已进入签名/安装流程；等待真实结果。文件不存在、选错窗口或导入报错时由 agent 纠正，不把“已复制路径”当成完成，也不连续重复提交正在进行的安装。
+6. 记事本继续作为用户登录与手机确认提示。**“请复制 TXT 中的路径”“请自己选择 IPA”不是正常的 agent 安装步骤。** 确实没有桌面控制能力时，先说明工具限制并完成其他可执行步骤，不能假称已经自动导入。
 
 ### iloader 也失败时
 
