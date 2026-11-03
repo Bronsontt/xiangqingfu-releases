@@ -1,48 +1,41 @@
-# 相清夫 · iPhone / iPad 安装包
+# 相清夫 · iPhone / iPad 家庭安装
 
-在本机浏览、分类、搜索和整理照片。此仓库提供 SideStore 安装包与配置说明。
+在本机浏览、分类、搜索和整理照片。安装流程已更新：**先用 Windows 的 iloader 直接安装相清夫，不再卡在 SideStore 登录或 LocalDevVPN。**
 
-**[打开最新版本下载页](https://github.com/Bronsontt/xiangqingfu-releases/releases/latest)**
+## Windows 双击入口
 
-## 让 Windows agent 自动安装
+**[下载 Install-XiangQingFu.cmd](https://github.com/Bronsontt/xiangqingfu-releases/raw/refs/heads/main/Install-XiangQingFu.cmd)**（若打开的是文本，保存为同名 `.cmd`，不要保存成 `.txt`）。
 
-无需先手动下载安装包。把下面这段交给能够操作你这台 Windows 电脑的 agent：
+1. 在 Windows 双击启动器。它会下载、校验安装包，复用或安装 iloader，并打开当前操作说明。
+2. USB 连接 iPhone，在 iloader 选择手机；本人登录 Apple 账号后，点击 **Import IPA**，粘贴助手复制的文件路径。
+3. 手机按提示确认信任和开发者模式，安装后打开相清夫。
+
+Apple 登录、UAC 和手机确认需要本人配合；启动器不会绕过这些确认。支持 Intel/AMD x64 Windows 和 Windows PowerShell 5.1+，无管理员身份运行 agent 的要求。
+
+## 让 Windows agent 继续代办
+
+把下面内容交给能操作你电脑的 agent；如果之前已在 iloader 登录，请复用现状：
 
 ```text
-请读取并执行以下安装任务文档，在我这台 Windows 上完成相清夫的下载、SideStore 配置、安装与首次续签验证：
+请按这个修订后的任务文档，在我的 Windows 上通过 iloader 的 Import IPA 直接用 USB 安装相清夫：
 https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WINDOWS-AGENT.md
-
-可直接下载和安装所需官方软件；遇到手机操作、账号验证或系统确认时，再逐步指导我配合。
+不要再把 SideStore 登录或 LocalDevVPN 当作前置条件。复用已有 iloader 和配对，不卸载现有 App。电脑上的步骤请直接执行，密码和手机确认由我完成。
 ```
 
-[完整安装任务文档](INSTALL-WINDOWS-AGENT.md) 包含自动选择最新稳定版本、下载与哈希校验、电脑配置、手机安装、首次续签和故障处理。手机信任、开发者模式、账号验证及系统确认由本人配合操作。
+[完整安装任务](INSTALL-WINDOWS-AGENT.md) · [复制启动提示词](01-WINDOWS-AGENT-PROMPT.txt) · [SideStore 登录排障](REPAIR-SIDESTORE.md)
 
-也可以打开 [简短启动提示词](01-WINDOWS-AGENT-PROMPT.txt) 复制，或按 [中文安装说明](00-START-HERE.txt) 手动操作。
+## 续签与下载
 
-## 手动下载
+- 免费 Apple 账号签名有效期 **7 天**。默认路线建议每 **5 天**接回 Windows，用同一 Apple 账号、同一实际安装标识再次 **Import IPA** 覆盖续签，不卸载相清夫。
+- 希望在手机上独立续签，可稍后配置 SideStore + Wi-Fi + LocalDevVPN。只有拔掉 USB 后两款 App 都刷新成功，才算验证完成。
+- [最新 IPA 和完整安装包](https://github.com/Bronsontt/xiangqingfu-releases/releases/latest)。旧 ZIP 若仍带有“先刷新 SideStore”的说明，请以本页和当前任务文档为准；新启动器兼容原有 IPA，无需重编译 App。
+- GitHub 自动提供的 Source code 压缩包不包含 App 安装包。
+- 相清夫最低要求 iOS / iPadOS 17.0。照片权限由本人选择；验收只浏览照片，无需删除真实照片。
 
-| 文件 | 用途 |
-| --- | --- |
-| `XiangQingFu-SideStore-Family-1.0-1.zip` | 首次安装推荐：IPA、官方 iloader Windows x64 安装器、中文说明、agent 提示词和校验清单 |
-| `XiangQingFu-1.0-1-SideStore.ipa` | 已装好 SideStore 时，直接在 iPhone 上下载并导入 |
+## 本次修复的边界
 
-GitHub 自动提供的 `Source code` 压缩包只包含本仓库说明，**不包含 App 安装包**。
+`Welcome to SideStore / Failed to Sign In / -1005` 表示 SideStore 登录网络中断，不是 LocalDevVPN 需要登录 Apple 账号。新的 USB 路线移除了这一安装阻塞；不能据此声称原来的手机登录网络故障已经修好。
 
-## 使用要求
+App 仍为 1.0（构建 1），安装流程修订为 2。App 已完成 Release 真机构建及 IPA 校验；最终手机安装、运行、续签需要在收件人设备上确认。
 
-- 相清夫要求 **iOS / iPadOS 17.0 或更新**，支持 iPhone 和 iPad。
-- 使用本人免费的 Apple 账号，无需购买开发者会员。首次安装需要电脑；正常情况下，后续可在手机上通过 **Wi-Fi + LocalDevVPN** 刷新。
-- 免费签名只有 **7 天**。建议每 2～3 天刷新 SideStore 和相清夫，不要只依赖后台自动刷新。
-- 系统升级、配对失效或 SideStore 过期时，可能需要重新借助电脑处理。
-- 配置时由本人直接输入密码、验证码和手机锁屏密码，不要发到 agent 聊天中。
-- 首次验收只需浏览照片。实际删除系统照片时，开启 iCloud 照片的设备会同步删除。
-
-## 当前版本验证
-
-1.0（构建 1）已完成 Release 真机构建和安装包结构/哈希检查。IPA 由收件人的 SideStore 重新签名；最终安装和首次续签需在收件人的设备上验证。
-
-## 官方工具
-
-[SideStore 安装准备](https://docs.sidestore.io/docs/installation/prerequisites) · [SideStore 安装流程](https://docs.sidestore.io/docs/installation/install) · [iloader 官方项目](https://iloader.app)
-
-随包附带的是未修改的官方 iloader v2.4.1 x64 安装器，来源、哈希和 MIT 许可在 `tools/` 目录。本项目与 SideStore、iloader 或 Apple 无隶属关系。
+随包 iloader 是 [官方 v2.4.1](https://github.com/nab138/iloader/releases/tag/v2.4.1) 未修改的 x64 安装器；启动脚本由本项目维护。与 iloader、SideStore、Apple 无隶属关系。本仓库只分发安装包、安装脚本和说明，不提供账号、设备配对文件或签名私钥。

@@ -1,4 +1,6 @@
-请读取并执行以下安装任务文档，在我这台 Windows 上完成相清夫的下载、SideStore 配置、安装与首次续签验证：
+请在我这台 Windows 上按修订后的安装任务，把相清夫安装到我的 iPhone：
 https://raw.githubusercontent.com/Bronsontt/xiangqingfu-releases/main/INSTALL-WINDOWS-AGENT.md
 
-可直接下载和安装所需官方软件；遇到手机操作、账号验证或系统确认时，再逐步指导我配合。
+默认通过 iloader 的 Import IPA 直接用 USB 安装相清夫，不要再把 SideStore 登录、LocalDevVPN 或 SideStore 首次刷新作为安装前提。已有 iloader 登录和手机配对请复用；不要卸载现有 App。
+可下载并运行本仓库 Install-XiangQingFu.cmd，完成下载校验和电脑准备，再继续操作 iloader 界面安装。密码、验证码由我在软件界面输入，手机信任和开发者模式由我确认。
+最后确认相清夫能打开，并说明免费签名每 7 天内需续签，建议每 5 天接回电脑；手机独立续签只在实际验证后才算完成。
