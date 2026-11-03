@@ -239,7 +239,8 @@ $($kit.Ipa)
 本助手只完成电脑准备；请实际打开手机上的相清夫确认成功。
 密码、验证码只在 iloader/手机界面输入，不交给 agent。
 
-SideStore 的手机独立续签可以稍后排查，见安装包中的 REPAIR-SIDESTORE.md。
+SideStore 的手机独立续签可以稍后排查：
+https://github.com/Bronsontt/xiangqingfu-releases/blob/main/REPAIR-SIDESTORE.md
 准备状态：$statusPath
 "@
         $next = Join-Path $cache 'NEXT-STEPS.txt'

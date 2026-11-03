@@ -4,7 +4,9 @@
 
 ## Windows 双击入口
 
-**[下载 Install-XiangQingFu.cmd](https://github.com/Bronsontt/xiangqingfu-releases/raw/refs/heads/main/Install-XiangQingFu.cmd)**（若打开的是文本，保存为同名 `.cmd`，不要保存成 `.txt`）。
+**[下载 Windows 启动包](https://github.com/Bronsontt/xiangqingfu-releases/raw/refs/heads/main/XiangQingFu-Windows-Start.zip)**，解压后双击 `Install-XiangQingFu.cmd`。启动包很小，运行时会自动下载完整安装文件。
+
+[查看启动脚本](Install-XiangQingFu.cmd)（也可单独保存为同名 `.cmd`，不要保存成 `.txt`）。
 
 1. 在 Windows 双击启动器。它会下载、校验安装包，复用或安装 iloader，并打开当前操作说明。
 2. USB 连接 iPhone，在 iloader 选择手机；本人登录 Apple 账号后，点击 **Import IPA**，粘贴助手复制的文件路径。
